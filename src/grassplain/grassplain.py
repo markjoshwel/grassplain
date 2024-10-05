@@ -15,37 +15,37 @@ class GCFMetaSection(BaseModel):
     extra: dict[str, str] = {}
 
 
-class GCFArgument(BaseModel):
+class GrassplainArgument(BaseModel):
     description: str
     number_of: int = 1
 
 
-class GCFOption(BaseModel):
+class GrassplainOption(BaseModel):
     description: str
     number_of: int = 1
     default: str = ""
 
 
-class GCFFlag(BaseModel):
+class GrassplainFlag(BaseModel):
     description: str
     short: str = ""
     default: int = 1
 
 
 class GCFGlobalSection(BaseModel):
-    arguments: dict[str, GCFArgument] = {}
-    options: dict[str, GCFOption] = {}
-    flags: dict[str, GCFFlag] = {}
+    arguments: dict[str, GrassplainArgument] = {}
+    options: dict[str, GrassplainOption] = {}
+    flags: dict[str, GrassplainFlag] = {}
 
 
-class GCFSubcommandsSection(BaseModel):
+class GCFSubcommandSection(BaseModel):
     description: str
-    arguments: dict[str, GCFArgument] = {}
-    options: dict[str, GCFOption] = {}
-    flags: dict[str, GCFFlag] = {}
+    arguments: dict[str, GrassplainArgument] = {}
+    options: dict[str, GrassplainOption] = {}
+    flags: dict[str, GrassplainFlag] = {}
 
     # god bless pydantic supporting cyclic references
-    subcommands: dict[str, "GCFSubcommandsSection"] = {}
+    subcommands: dict[str, "GCFSubcommandSection"] = {}
 
 
 class GrassplainConfigurationFile(BaseModel):
@@ -86,7 +86,7 @@ class GrassplainConfigurationFile(BaseModel):
 
     meta: GCFMetaSection = GCFMetaSection()
     global_: GCFGlobalSection = Field(alias="global", default=GCFGlobalSection())
-    subcommand: dict[str, GCFSubcommandsSection] = {}
+    subcommand: dict[str, GCFSubcommandSection] = {}
 
 
 def main() -> None:
