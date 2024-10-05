@@ -54,7 +54,7 @@ an (unserious) command line argument parser generator, for when argparse is too 
   - a) quick and dirty (see 'why should i NOT use it?')
   - b) ahead-of-time, so parsing starts when code execution starts
 
-  this might ~just~ work for you
+  this might \~just~ work for you
 
 - **why should i NOT use it?**
 
@@ -116,9 +116,9 @@ an (unserious) command line argument parser generator, for when argparse is too 
 
 ## could it be better?
 
-1. yeah, it's currently ~reeealllly~ naively written
+1. yeah, it's currently \~reeealllly~ naively written
 
-2. i mean, this ~is~ an open source project 
+2. i mean, this \~is~ an open source project 
    (open an issue or a pull request if you want to help make it better! :D)
 
 3. the 'backend' is modular, so i don't know, eventually i (or you!) could write a variant that
