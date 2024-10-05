@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "grassplain"
+version = "0.1.0"
+description = "an (unserious) command line argument parser generator, for when argparse is too much and too slow"
+authors = ["Mark Joshwel <mark@joshwel.co>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "^2.9.2"
+tomlkit = "^0.13.2"
+tomlantic = "^0.2.1"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.11.2"
+ruff = "^0.6.9"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
