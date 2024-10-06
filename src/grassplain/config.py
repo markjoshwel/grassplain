@@ -1,10 +1,18 @@
+from enum import Enum
 from pathlib import Path
-from pprint import pprint
-from sys import argv, exit, stderr
+from sys import exit, stderr
+from typing import Literal
 
 from pydantic import BaseModel, Field
 from tomlantic import ModelBoundTOML, TOMLValidationError
 from tomlkit import TOMLDocument, loads
+
+
+class GrassplainTargetLanguageEnum(str, Enum):
+    PYTHON = "python"
+
+
+GrassplainTargetLanguageType = Literal[GrassplainTargetLanguageEnum.PYTHON]
 
 
 class GCFMetaSection(BaseModel):
@@ -12,24 +20,25 @@ class GCFMetaSection(BaseModel):
     max_line_length: int = 80
     min_description_padding: int = 12
     max_description_length: int = 25
+    target_language: GrassplainTargetLanguageType = GrassplainTargetLanguageEnum.PYTHON
     extra: dict[str, str] = {}
 
 
 class GrassplainArgument(BaseModel):
     description: str
-    number_of: int = 1
+    number_of_arguments: int = 1
 
 
 class GrassplainOption(BaseModel):
     description: str
-    number_of: int = 1
+    delimiter: str = ""
     default: str = ""
 
 
 class GrassplainFlag(BaseModel):
     description: str
     short: str = ""
-    default: int = 1
+    default: int = 0
 
 
 class GCFGlobalSection(BaseModel):
@@ -49,47 +58,14 @@ class GCFSubcommandSection(BaseModel):
 
 
 class GrassplainConfigurationFile(BaseModel):
-    # [meta]
-    # description = "<description here>"
-    # max_line_length = 80
-    # min_description_padding = 12
-    # max_description_padding = 25
-    #
-    # [metas.extra]
-    # "<header>" = "<body text>"
-    #
-    # [global.arguments."<argument name>"]
-    # description = "<description here>"
-    # number_of = 1  # set to -1 for unlimited
-    #
-    # [global.options."<option name>"]
-    # description = "<description here>"
-    # number_of = 1  # set to -1 for unlimited
-    # default = ""  # when reading, if the value is empty, then the option was not set
-    #
-    # [global.flags."<long flag name>"]
-    # short = "<short flag character>"
-    # description = "<description here>"
-    # default = 1
-    #
-    # [subcommands."<subcommand name>"]
-    # description = "<description here>"
-    #
-    # # defined just like their global counterparts
-    # [subcommands."<subcommand name>".arguments."<option name>"]
-    # [subcommands."<subcommand name>".options."<option name>"]
-    # [subcommands."<subcommand name>".flags."<option name>"]
-    #
-    # # subcommands can have subcommands
-    # [subcommands."<subcommand name>".subcommands."<subcommand name>"]
-    # description = "<description here>"
-
     meta: GCFMetaSection = GCFMetaSection()
     global_: GCFGlobalSection = Field(alias="global", default=GCFGlobalSection())
     subcommand: dict[str, GCFSubcommandSection] = {}
 
 
-def main() -> None:
+def get_config_from_args(
+    argv: list[str],
+) -> tuple[Path, ModelBoundTOML[GrassplainConfigurationFile]]:
     if len(argv) < 2:
         print(
             f"error: no configuration file specified\n\nusage: {argv[0]} CONFIG",
@@ -104,6 +80,7 @@ def main() -> None:
 
     try:
         config_toml: TOMLDocument = loads(config_path.read_text(encoding="utf-8"))
+
     except Exception as e:
         print(
             f"error while parsing '{config_path}': {e} ({e.__class__.__name__})",
@@ -112,8 +89,10 @@ def main() -> None:
         exit(-1)
 
     try:
-        config: ModelBoundTOML[GrassplainConfigurationFile] = ModelBoundTOML(
-            model=GrassplainConfigurationFile, document=config_toml
+        config_data: ModelBoundTOML[GrassplainConfigurationFile] = ModelBoundTOML(
+            model=GrassplainConfigurationFile,
+            document=config_toml,
+            # handle_errors=False,
         )
 
     except TOMLValidationError as e:
@@ -131,8 +110,4 @@ def main() -> None:
         )
         exit(-1)
 
-    # pprint(config.model.model_dump())
-
-
-if __name__ == "__main__":
-    main()
+    return config_path, config_data

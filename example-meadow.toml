@@ -32,6 +32,7 @@ min_description_padding = 12
 #
 # (for an example of this, see the 'global options' section in the reference output)
 max_description_padding = 25
+target_language = "python"
 
 # extra text to be appended to the end of the help message
 [meta.extra]
@@ -61,19 +62,20 @@ per-function or per-class:
 [global.arguments.file]
 # defaults to '1' if not specified,
 # could also be set to -1 for unlimited arguments (will be a list)
-number_of = -1
-description = "a list of files or globs to target for processing"
+number_of_arguments = -1
+description         = "a list of files or globs to target for processing"
 
 [global.options.ignore]
-short = "i"  # specify a one-character shortened form of the option, if desired
+short       = "i"  # specify a one-character shortened form of the option, if desired
 description = "a comma-separated list of globs to ignore when processing files"
+delimiter   = ","  # specify a custom delimiter for the option, if desired
 
 [global.flags.ignore-no-docstring]
-short = "n"
+short       = "n"
 description = "whether to ignore functions and classes with no docstrings"
 # remember! flags are treated as integers! you could put true/false here if you want to,
 # but the resulting value will be 1/0 respectively.
-default = 0
+default     = 0
 
 [global.flags.ignore-outdated]
 short = "o"

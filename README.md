@@ -128,8 +128,8 @@ an (unserious) command line argument parser generator, for when argparse is too 
 
 ```toml
 [meta]
-description = "<description here>"
-max_line_length = 80
+description             = "<description here>"  # required!
+max_line_length         = 80
 min_description_padding = 12
 max_description_padding = 25
 
@@ -137,30 +137,39 @@ max_description_padding = 25
 "<header>" = "<body text>"
 
 [global.arguments."<argument name>"]
-description = "<description here>"
-number_of = 1  # set to -1 for unlimited
+description         = "<description here>"  # required!
+number_of_arguments = 1  # set to -1 for unlimited
 
 [global.options."<option name>"]
-description = "<description here>"
-number_of = 1  # set to -1 for unlimited
-default = ""  # when reading, if the value is empty, then the option was not set
+description = "<description here>"  # required!
+delimiter   = ""  # if set to anything else, will split the value by this delimiter
+                  # for escaping the delimiter, use a backslash before it:
+                  #   (e.g., `--text "Now then\, let’s compare answers."`)
+                  # you can also escape backslashes with another backslash
+                  #   (e.g., `--path "K:\\DCIM\\Camera,K:\\Pictures"`)
+                  # note: if no delimiter is given, arguments are treated as-is
+                  # note: when reading, if a delimiter was given,
+                  #         the resulting argument is a list[str]
+default     = ""  # note: when reading, if the value is empty, then the option was not set
 
 [global.flags."<long flag name>"]
-short = "<short flag character>"
-description = "<description here>"
-default = 1
+description = "<description here>"  # required!
+short       = "<short flag character>"
+default     = 0  # flags are treated as integers, so 0 is the default value
+                 # (0, for false/the flag not being set/used)
 
+# defining subcommands
 [subcommands."<subcommand name>"]
-description = "<description here>"
+description = "<description here>"  # required!
 
-# defined just like their global counterparts
+# args/opts/flags of subcommands are defined just like their global counterparts
 [subcommands."<subcommand name>".arguments."<option name>"]
 [subcommands."<subcommand name>".options."<option name>"]
 [subcommands."<subcommand name>".flags."<option name>"]
 
-# subcommands can have subcommands
+# subcommands can also have their own subcommands
 [subcommands."<subcommand name>".subcommands."<subcommand name>"]
-description = "<description here>"
+description = "<description here>"  # (still) required!
 ```
 
 ## what's the licence?
